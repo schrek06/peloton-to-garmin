@@ -30,6 +30,8 @@ namespace Conversion
 			using var tracing = Tracing.Trace($"{nameof(FitConverter)}.{nameof(Save)}")
 										.WithTag(TagKey.Format, FileFormat.Fit.ToString());
 
+			if (data is null) return;
+
 			using (FileStream fitDest = new FileStream(path, FileMode.Create, FileAccess.ReadWrite, FileShare.Read))
 			{
 				Encode encoder = new Encode(ProtocolVersion.V20);
@@ -60,7 +62,7 @@ namespace Conversion
 
 			var startTime = GetStartTimeUtc(workout);
 			var endTime = GetEndTimeUtc(workout, workoutSamples);
-			var title = WorkoutHelper.GetTitle(workout);
+			var title = WorkoutHelper.GetTitle(workout, settings.Format);
 			var sport = GetGarminSport(workout);
 			var subSport = GetGarminSubSport(workout);
 			var deviceInfo = await GetDeviceInfoAsync(workout.Fitness_Discipline, settings);
@@ -68,7 +70,7 @@ namespace Conversion
 			if (sport == Sport.Invalid)
 			{
 				_logger.Warning("Unsupported Sport Type - Skipping {@Sport}", workout.Fitness_Discipline);
-				return new Tuple<string, ICollection<Mesg>>(string.Empty, null);
+				return null;
 			}
 
 			var fileIdMesg = new FileIdMesg();
@@ -127,7 +129,7 @@ namespace Conversion
 			AddMetrics(messages, workoutSamples, sport, startTime);
 
 			var workoutMesg = new WorkoutMesg();
-			workoutMesg.SetWktName(title.Replace(WorkoutHelper.SpaceSeparator, ' '));
+			workoutMesg.SetWktName(title.Replace(WorkoutHelper.SpaceSeparator, WorkoutHelper.Space));
 			workoutMesg.SetCapabilities(32);
 			workoutMesg.SetSport(sport);
 			workoutMesg.SetSubSport(subSport);

@@ -3,13 +3,26 @@
 
 ## Features
 
-- Added support for mapping several more Exercises from Peloton to Garmin
-    - #466, #472
+- [#610] UI - Add more workout data to Sync page
 
 ## Fixes
 
-- [#491] - Fix case where a Garmin MFA code has a leading 0 causing p2g to send incorrect code to Garmin - @jheizer
+- [#604] Fix workout title template not handling special characters correctly
 
-## Housekeeping
+## Docker Tags
 
-- [#461] Bump dependencies
+- Console
+    - `console-stable`
+    - `console-latest`
+    - `console-v4.1.0`
+    - `console-v4`
+- Api
+    - `api-stable`
+    - `api-latest`
+    - `api-v4.1.0`
+    - `api-v4`
+- WebUI
+    - `webui-stable`
+    - `webui-latest`
+    - `webui-v4.1.0`
+    - `webui-v4`

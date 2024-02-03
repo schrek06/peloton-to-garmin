@@ -52,7 +52,7 @@ namespace Conversion
 			Name = "TacxTrainingAppWin", // Max 20 Chars
 			ProductID = GarminProduct.TacxTrainingAppWin,
 			UnitId = 1,
-			ManufacturerId = 1, // Garmin
+			ManufacturerId = 89, // Tacx
 			Version = new GarminDeviceVersion()
 			{
 				VersionMajor = 1,
@@ -113,7 +113,7 @@ namespace Conversion
 
 			// call internal convert method
 			T converted = default;
-			var workoutTitle = WorkoutHelper.GetUniqueTitle(workoutData.Workout);
+			var workoutTitle = WorkoutHelper.GetUniqueTitle(workoutData.Workout, settings.Format);
 			try
 			{
 				converted = await ConvertInternalAsync(workoutData, settings);
@@ -194,7 +194,7 @@ namespace Conversion
 
 				var backupDest = Path.Join(localSaveDir, $"{workoutTitle}.{formatString}");
 				_fileHandler.Copy(sourcePath, backupDest, overwrite: true);
-				_logger.Information("[@Format] Backed up file {@File}", Format, backupDest);
+				_logger.Information("[{@Format}] Backed up file {@File}", Format, backupDest);
 			}
 			catch (Exception e)
 			{
@@ -565,17 +565,22 @@ namespace Conversion
 
 		protected async Task<GarminDeviceInfo> GetDeviceInfoAsync(FitnessDiscipline sport, Settings settings)
 		{
-			GarminDeviceInfo userProvidedDeviceInfo = await _settingsService.GetCustomDeviceInfoAsync(settings.Garmin.Email);
+			GarminDeviceInfo deviceInfo = null;
+			deviceInfo = await _settingsService.GetCustomDeviceInfoAsync(settings.Garmin.Email);
 
-			if (userProvidedDeviceInfo is object) return userProvidedDeviceInfo;
+			if (deviceInfo is null)
+			{
+				if (sport == FitnessDiscipline.Cycling)
+					deviceInfo = CyclingDevice;
+				else if (sport == FitnessDiscipline.Caesar)
+					deviceInfo = RowingDevice;
+				else
+					deviceInfo = DefaultDevice;
+			}
 
-			if(sport == FitnessDiscipline.Cycling)
-				return CyclingDevice;
+			_logger.Debug("Using device: {@DeviceName}, {@DeviceProdId}, {@DeviceManufacturerId}, {@DeviceVersion}", deviceInfo.Name, deviceInfo.ProductID, deviceInfo.ManufacturerId, deviceInfo.Version);
 
-			if (sport == FitnessDiscipline.Caesar)
-				return RowingDevice;
-
-			return DefaultDevice;
+			return deviceInfo;
 		}
 
 		protected ushort? GetCyclingFtp(Workout workout, UserData userData)
@@ -626,6 +631,7 @@ namespace Conversion
 				case FitnessDiscipline.Meditation:
 					return Sport.Training;
 				case FitnessDiscipline.Caesar:
+				case FitnessDiscipline.Caesar_Bootcamp:
 					return Sport.Rowing;
 				default:
 					return Sport.Invalid;

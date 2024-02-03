@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net7.0</TargetFramework>
 	<GenerateDocumentationFile>true</GenerateDocumentationFile>
 	<NoWarn>$(NoWarn);1591</NoWarn>
   </PropertyGroup>
@@ -22,6 +22,10 @@
     <None Remove="FitSdk\plugins\examples\**" />
     <None Remove="FitSdk_prev\**" />
     <None Remove="Fit\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="OAuth.DotNetCore" Version="3.0.1" />
   </ItemGroup>
 
   <ItemGroup>
