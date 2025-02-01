@@ -1,6 +1,9 @@
-﻿using Common.Stateful;
+﻿using Common.Dto.Garmin;
+using Common.Stateful;
+using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text.Json.Serialization;
 
 namespace Common.Dto;
 
@@ -36,7 +39,7 @@ public class App
 	public int PollingIntervalSeconds { get; set; }
 	public bool CheckForUpdates { get; set; }
 
-	public static string DataDirectory => Path.GetFullPath(Path.Join(Statics.DefaultDataDirectory, "data"));
+	public static string DataDirectory => Statics.DefaultDataDirectory;
 
 	public string WorkingDirectory => Statics.DefaultTempDirectory;
 	public string OutputDirectory => Statics.DefaultOutputDirectory;
@@ -57,13 +60,23 @@ public class Format
 		Strength = new Strength();
 	}
 
+	[JsonIgnore]
+	public static readonly Dictionary<WorkoutType, GarminDeviceInfo> DefaultDeviceInfoSettings = new Dictionary<WorkoutType, GarminDeviceInfo>()
+	{
+		{ WorkoutType.None, GarminDevices.Forerunner945 },
+		{ WorkoutType.Cycling, GarminDevices.TACXDevice },
+		{ WorkoutType.Rowing, GarminDevices.EpixDevice },
+	};
+
 	public bool Fit { get; set; }
 	public bool Json { get; set; }
 	public bool Tcx { get; set; }
 	public bool SaveLocalCopy { get; set; }
 	public bool IncludeTimeInHRZones { get; set; }
 	public bool IncludeTimeInPowerZones { get; set; }
+	[Obsolete("Use DeviceInfoSettings instead.  Will be removed in P2G v5.")]
 	public string DeviceInfoPath { get; set; }
+	public Dictionary<WorkoutType, GarminDeviceInfo> DeviceInfoSettings { get; set; }
 	public string WorkoutTitleTemplate { get; set; } = "{{PelotonWorkoutTitle}}{{#if PelotonInstructorName}} with {{PelotonInstructorName}}{{/if}}";
 	public Cycling Cycling { get; set; }
 	public Running Running { get; set; }
@@ -128,6 +141,29 @@ public class GarminSettings : ICredentials
 	public bool TwoStepVerificationEnabled { get; set; }
 	public bool Upload { get; set; }
 	public FileFormat FormatToUpload { get; set; }
+	public GarminApiSettings Api {  get; set; } = new GarminApiSettings();
+}
+
+public class GarminApiSettings
+{
+	public string SsoSignInUrl { get; set; } = "https://sso.garmin.com/sso/signin";
+	public string SsoEmbedUrl { get; set; } = "https://sso.garmin.com/sso/embed";
+	public string SsoMfaCodeUrl { get; set; } = "https://sso.garmin.com/sso/verifyMFA/loginEnterMfaCode";
+	public string SsoUserAgent { get; set; } = "GCM-iOS-5.7.2.1";
+
+	public string OAuth1TokenUrl { get; set; } = "https://connectapi.garmin.com/oauth-service/oauth/preauthorized";
+	public string OAuth1LoginUrlParam { get; set; } = "https://sso.garmin.com/sso/embed&accepts-mfa-tokens=true";
+
+	public string OAuth2RequestUrl { get; set; } = "https://connectapi.garmin.com/oauth-service/oauth/exchange/user/2.0";
+
+	public string UploadActivityUrl { get; set; } = "https://connectapi.garmin.com/upload-service/upload";
+	public string UploadActivityUserAgent { get; set; } = "GCM-iOS-5.7.2.1";
+	public string UplaodActivityNkHeader { get; set; } = "NT";
+
+	public string Origin { get; set; } = "https://sso.garmin.com";
+	public string Referer { get; set; } = "https://sso.garmin.com/sso/signin";
+
+
 }
 
 public enum FileFormat : byte
