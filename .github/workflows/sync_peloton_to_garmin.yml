@@ -9,13 +9,18 @@ jobs:
     container:
       image: philosowaffle/peloton-to-garmin:console-stable
     steps:
+      - name: Debug Container
+        run: |
+          ls -la /app
+          dotnet --version
+          find / -name "*.dll" 2>/dev/null | grep -i PelotonToGarminConsole || echo "No PelotonToGarminConsole.dll found"
       - name: Run Peloton to Garmin Sync
         env:
           PELOTON_USERNAME: ${{ secrets.PELOTON_USERNAME }}
           PELOTON_PASSWORD: ${{ secrets.PELOTON_PASSWORD }}
           GARMIN_USERNAME: ${{ secrets.GARMIN_USERNAME }}
           GARMIN_PASSWORD: ${{ secrets.GARMIN_PASSWORD }}
-          OUTPUT_DIR: /__w/peloton-to-garmin/peloton-to-garmin
+          OUTPUT_DIR: /__w/peloton-to-garmin/peloton-to-garmin/output
         run: |
           mkdir -p "$OUTPUT_DIR"
           dotnet /app/PelotonToGarminConsole.dll --peloton-username "$PELOTON_USERNAME" --peloton-password "$PELOTON_PASSWORD" --garmin-username "$GARMIN_USERNAME" --garmin-password "$GARMIN_PASSWORD" --output "$OUTPUT_DIR"
