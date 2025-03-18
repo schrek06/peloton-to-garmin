@@ -7,14 +7,14 @@ jobs:
   sync-peloton-to-garmin:
     runs-on: ubuntu-latest
     env:
-      OUTPUT_DIR: ./output  # Relative path in the workspace
+      OUTPUT_DIR: ./output
     steps:
       - name: Checkout
         uses: actions/checkout@v3
       - name: Setup .NET Core
         uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: '6.0.x'
+          dotnet-version: '9.0.x'  # Changed from 6.0.x to match global.json
       - name: Create Output Directory
         run: mkdir -p "$OUTPUT_DIR"
       - name: Sync Peloton workouts
