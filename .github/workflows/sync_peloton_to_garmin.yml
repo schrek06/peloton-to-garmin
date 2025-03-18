@@ -7,7 +7,7 @@ jobs:
   sync-peloton-to-garmin:
     runs-on: ubuntu-latest
     env:
-      OUTPUT_DIR: /app/output  # Define at job level
+      OUTPUT_DIR: /app/output 
           steps:
       - name: Checkout
         uses: actions/checkout@v3
