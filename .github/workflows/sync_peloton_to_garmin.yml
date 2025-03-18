@@ -34,7 +34,8 @@ jobs:
     - name: 🗃 Create config file
       env:
         DEFAULT_WORKOUT_NUM: 10
-      run: |        cat <<EOT > /app/configuration.local.json 
+      run: |        
+      cat <<EOT > /app/configuration.local.json 
         {
           "App": {
             "EnablePolling": false,
