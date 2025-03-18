@@ -25,7 +25,7 @@ jobs:
     steps:
 
     - name: ⚙ Configure output directory
-      run: echo "OUTPUT_DIR=/app/output" >> $GITHUB_ENV
+      run:     echo "OUTPUT_DIR=/app/output" | tee -a "$GITHUB_ENV"
       shell: bash
 
     - name: 📁Create output directory
