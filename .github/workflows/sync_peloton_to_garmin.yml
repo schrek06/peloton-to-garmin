@@ -1,22 +1,22 @@
 name: Sync Peloton to Garmin
 on:
   schedule:
-    - cron: '0 */1 * * *'  # Runs hourly (adjust as needed)
+    - cron: '0 */1 * * *'
   workflow_dispatch:
 jobs:
   sync-peloton-to-garmin:
     runs-on: ubuntu-latest
     env:
-      OUTPUT_DIR: /app/output 
+      OUTPUT_DIR: ./output  # Relative path in the workspace
     steps:
       - name: Checkout
         uses: actions/checkout@v3
       - name: Setup .NET Core
         uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: '6.0.x'  # Match P2G requirements
+          dotnet-version: '6.0.x'
       - name: Create Output Directory
-        run: mkdir -p "$OUTPUT_DIR"  # Ensure the directory exists
+        run: mkdir -p "$OUTPUT_DIR"
       - name: Sync Peloton workouts
         env:
           PELOTON_USERNAME: ${{ secrets.PELOTON_USERNAME }}
