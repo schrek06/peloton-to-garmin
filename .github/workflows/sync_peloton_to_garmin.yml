@@ -1,7 +1,7 @@
 name: Sync Peloton to Garmin
 on:
   schedule:
-    - cron: '* */2 * * *'
+    - cron: '0 */1 * * *'
   workflow_dispatch:
 jobs:
   sync:
@@ -15,7 +15,7 @@ jobs:
           PELOTON_PASSWORD: ${{ secrets.PELOTON_PASSWORD }}
           GARMIN_USERNAME: ${{ secrets.GARMIN_USERNAME }}
           GARMIN_PASSWORD: ${{ secrets.GARMIN_PASSWORD }}
-          OUTPUT_DIR: /github/workspace/output  # Set inside container
+          OUTPUT_DIR: ./output  # Relative to /__w/peloton-to-garmin/peloton-to-garmin
         run: |
           mkdir -p "$OUTPUT_DIR"
           dotnet /app/PelotonToGarminConsole.dll --peloton-username "$PELOTON_USERNAME" --peloton-password "$PELOTON_PASSWORD" --garmin-username "$GARMIN_USERNAME" --garmin-password "$GARMIN_PASSWORD" --output "$OUTPUT_DIR"
