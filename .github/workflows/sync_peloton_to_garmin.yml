@@ -14,7 +14,7 @@ jobs:
       - name: Setup .NET Core
         uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: '9.0.x'  # Changed from 6.0.x to match global.json
+          dotnet-version: '9.0.101'  # Changed from 6.0.x to match global.json
       - name: Create Output Directory
         run: mkdir -p "$OUTPUT_DIR"
       - name: Sync Peloton workouts
