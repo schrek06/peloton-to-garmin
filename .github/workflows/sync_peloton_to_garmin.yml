@@ -23,7 +23,7 @@ jobs:
     name: 🔄 Sync
     runs-on: ubuntu-latest
     container: 
-      image:  philosowaffle/peloton-to-garmin:latest
+      image:  philosowaffle/peloton-to-garmin:console-v5.0.2
       options: --user root
     steps:
 
@@ -93,6 +93,7 @@ jobs:
         name: output
         path: ${{ env.OUTPUT_DIR }}
         if-no-files-found: error
+
 
 
 
