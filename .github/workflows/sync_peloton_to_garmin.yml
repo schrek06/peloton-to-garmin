@@ -13,7 +13,7 @@ on:
         type: boolean
         default: false
   schedule:
-    - cron: '0 1 * * *'
+    - cron: '0 * * * *'
 
 env:
   OUTPUT_DIR: /app/output
@@ -23,7 +23,7 @@ jobs:
     name: 🔄 Sync
     runs-on: ubuntu-latest
     container: 
-      image:  philosowaffle/peloton-to-garmin:console-latest
+      image:  philosowaffle/peloton-to-garmin:console-main
       options: --user root
     steps:
 
@@ -93,4 +93,5 @@ jobs:
         name: output
         path: ${{ env.OUTPUT_DIR }}
         if-no-files-found: error
+
 
